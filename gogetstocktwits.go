@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"time"
 )
@@ -99,7 +100,7 @@ type StocktwitMessages struct {
 // StocktwitsCallAPI handles calling the stocktwits API to return the response for
 // an individual stock.  The response contains extra metadata which is parsed for the
 // return.  It returns
-func StocktwitsCallAPI(symbol string) (StocktwitsMessages, StocktwitProfile) {
+func StocktwitsCallAPI(symbol string) ([]StocktwitMessage, StocktwitProfile) {
 	// call api to get all stocks, then loop over each stock symbol and call quote url to get
 	// current and previous close prices.  Compare for % change and print qualifying stocks
 	stocktwitURL := "https://api.stocktwits.com/api/2/streams/symbol/" + symbol + ".json"
@@ -138,10 +139,10 @@ func StocktwitsCallAPI(symbol string) (StocktwitsMessages, StocktwitProfile) {
 
 	// build the StocktwitsProfile to return
 	stocktwitsProfile := StocktwitProfile{
-		"response":    response.Response,
-		"symbol":      response.Symbol,
-		"cursor":      response.Cursor,
-		"temperature": stocktwitsTemperature,
+		Response:    response.Response,
+		Symbol:      response.Symbol,
+		Cursor:      response.Cursor,
+		Temperature: stocktwitsTemperature,
 	}
 
 	// Return the profile and the message
@@ -154,13 +155,13 @@ func stocktwitsAPICall(url string, response *StocktwitResponse) *StocktwitRespon
 	body, readErr := returnURL(url)
 	if readErr != nil {
 		fmt.Println(readErr.Error())
-		writeFile(logPath, "ERROR: Stocktwits Api error - "+readErr.Error())
+		log.Println("ERROR: Stocktwits Api error - " + readErr.Error())
 	}
 
 	jsonErr := json.Unmarshal(body, response)
 	if jsonErr != nil {
 		fmt.Println(jsonErr.Error())
-		writeFile(logPath, "ERROR: Json Unmarshal error - "+jsonErr.Error())
+		log.Println("ERROR: Json Unmarshal error - " + jsonErr.Error())
 	}
 
 	return response
