@@ -1,4 +1,4 @@
-package gogetstocktwits
+package stocktwitsapi
 
 import (
 	"encoding/json"
@@ -99,7 +99,7 @@ type StocktwitMessages struct {
 
 // StocktwitsCallAPI handles calling the stocktwits API to return the response for
 // an individual stock.  The response contains extra metadata which is parsed for the
-// return.  It returns
+// return.  It returns an array of message and a StocktwitProfile object.
 func StocktwitsCallAPI(symbol string) ([]StocktwitMessage, StocktwitProfile) {
 	// call api to get all stocks, then loop over each stock symbol and call quote url to get
 	// current and previous close prices.  Compare for % change and print qualifying stocks

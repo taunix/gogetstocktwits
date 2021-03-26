@@ -1,3 +1,3 @@
-module github.com/taunix/gogetstocktwits
+module stocktwitsapi
 
 go 1.15
